@@ -67,17 +67,30 @@ cd workspace && ./scripts/bootstrap/index.ts
 
 ## 🚀 Quick Start
 
-### Option 1: Add to Existing Project
+**Recommended:** Use the workspace to create a complete Roslyn source generator project from templates:
 
 ```bash
-# Add core library to your analyzer/generator project
-dotnet add package Deepstaging.Roslyn
+# Clone and bootstrap the workspace
+git clone https://github.com/deepstaging/workspace.git
+cd workspace
+./scripts/bootstrap/index.ts
 
-# Add testing framework
-dotnet add package Deepstaging.Roslyn.Testing
+# Create a new Roslyn generator repository from template
+workspace-repository-create
+# Select 'deepstaging-roslyn' when prompted
 ```
 
-### Option 2: Start from Template
+This sets up a complete development environment with:
+- Production-ready Roslyn generator, analyzer, and code fix
+- Full test suite using Deepstaging.Roslyn.Testing
+- Local NuGet feed for testing
+- Multi-repository orchestration tools
+
+---
+
+### Alternative: Standalone Template
+
+If you prefer working without the workspace:
 
 ```bash
 # Install templates
@@ -92,16 +105,14 @@ dotnet build
 dotnet test
 ```
 
-### Option 3: Use the Workspace
+### Alternative: Add to Existing Project
 
 ```bash
-# Clone and bootstrap
-git clone https://github.com/deepstaging/workspace.git
-cd workspace
-./scripts/bootstrap/index.ts
+# Add core library to your analyzer/generator project
+dotnet add package Deepstaging.Roslyn
 
-# Create repository from template
-workspace-repository-create
+# Add testing framework
+dotnet add package Deepstaging.Roslyn.Testing
 ```
 
 ---
