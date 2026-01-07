@@ -179,7 +179,9 @@ Build tooling in layers, testing each independently:
 
 ## 📄 License
 
-MIT - Build whatever you want with Deepstaging.
+RPL-1.5 (Reciprocal Public License) - Share improvements back to the community.
+
+All Deepstaging repositories are licensed under RPL-1.5. See individual repository LICENSE files for details.
 
 ---
 
