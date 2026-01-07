@@ -1,234 +1,179 @@
 # Deepstaging
 
-**Query-first infrastructure for building Roslyn source generators, analyzers, and code transformations.**
+**Modern infrastructure for building Roslyn source generators, analyzers, and code transformations.**
 
-Stop fighting with Roslyn's symbol APIs. Start building reliable tooling with confidence.
-
----
-
-## ✨ What Makes Deepstaging Different
-
-Most Roslyn tutorials dump you straight into `IIncrementalGenerator` and wish you luck. We take a different approach:
-
-**Build your queries first. Test them fast. Compose them fearlessly.**
-
-```csharp
-// Find all methods that return Task and have specific attributes
-var effectMethods = compilation
-    .QueryMethods()
-    .Where(m => m.ReturnsTask())
-    .WithAttribute("EffectAttribute")
-    .Project(m => new EffectInfo(
-        m.Name,
-        m.Parameters.Select(p => p.Type),
-        m.ReturnType
-    ));
-
-// Test in milliseconds, not seconds
-Assert.That(effectMethods.Count(), Is.EqualTo(5));
-```
-
-Once your queries work, building generators is straightforward. No more debugging symbol APIs in slow integration tests.
+A complete toolchain for building production-ready Roslyn tooling—from templates to testing to deployment.
 
 ---
 
-## 🚀 Quick Example: Build a Generator in 5 Minutes
+## 🎯 What is Deepstaging?
 
-**1. Query for what you need:**
-```csharp
-var controllers = compilation
-    .QueryTypes()
-    .WithAttribute("ApiControllerAttribute")
-    .Where(t => t.InheritsFrom("ControllerBase"))
-    .Project(t => new {
-        Name = t.Name,
-        Actions = t.Methods()
-                    .WithAttribute("HttpGetAttribute", "HttpPostAttribute")
-                    .Select(m => m.Name)
-    });
-```
+Deepstaging is a **full-stack development platform** for Roslyn-based tools. We provide:
 
-**2. Render with templates:**
-```csharp
-context.AddTemplate("ApiClient", new { Controllers = controllers });
-```
+1. **Core Libraries** - Fluent query builders and template-based generation
+2. **Testing Framework** - Fast, layered testing for queries, generators, analyzers, and code fixes
+3. **Project Templates** - Production-ready scaffolding with best practices built-in
+4. **Development Workspace** - Multi-repository orchestration and automation
 
-**3. Ship it:**
-```csharp
-// Generated: MyApiClient.g.cs
-public class MyApiClient {
-    public Task<Response> GetUsers() => ...
-    public Task<Response> CreateUser(User user) => ...
-}
-```
-
-**That's it.** No fighting with `ISymbol` hierarchies. No mysterious null references. Just queries that work.
+**Build complete Roslyn tooling in minutes, not weeks.**
 
 ---
 
-## 💎 Real-World Example: Effects System
+## 📦 Repositories
 
-Our [effects repository](https://github.com/deepstaging/effects) shows a complete production-ready system built on Deepstaging:
+### [deepstaging/roslyn](https://github.com/deepstaging/roslyn)
+**Core Roslyn infrastructure and testing framework**
 
-```csharp
-[Effects]
-public class UserService {
-    [Effect("database", "write")]
-    public async Task CreateUser(User user) { ... }
-    
-    [Effect("cache", "invalidate")]
-    public async Task InvalidateUserCache(string userId) { ... }
-}
-```
-
-**The generator automatically produces:**
-- Effect group configurations for dependency injection
-- OpenTelemetry instrumentation
-- Database context integration
-- Runtime effect tracking
-
-**All from clean queries tested in isolation.** See how we do it → [deepstaging/effects](https://github.com/deepstaging/effects)
-
----
-
-## 🎯 The Query-First Workflow
-
-```
-┌─────────────────────────────────────────┐
-│ 5. Generator (Integration Tests)       │  ← Slow (seconds)
-├─────────────────────────────────────────┤
-│ 4. CodeFix (Transformation Tests)      │  ← Medium
-├─────────────────────────────────────────┤
-│ 3. Analyzer (Diagnostic Tests)         │  ← Medium  
-├─────────────────────────────────────────┤
-│ 2. Template (Rendering Tests)          │  ← Fast
-├─────────────────────────────────────────┤
-│ 1. Query (Unit Tests)                  │  ← FASTEST (milliseconds)
-└─────────────────────────────────────────┘
-         ↑
-    Start here!
-```
-
-**Test at the fastest layer.** Catch 90% of bugs in milliseconds, not minutes.
-
----
-
-## 📦 Packages
-
-### [deepstaging/deepstaging](https://github.com/deepstaging/deepstaging)
-**Core infrastructure for Roslyn tooling**
+Three interconnected packages:
+- **Deepstaging.Roslyn** - Fluent query builders for finding and projecting symbols
+- **Deepstaging.Roslyn.Generators** - Template-based source generation with Scriban
+- **Deepstaging.Roslyn.Testing** - Fast testing infrastructure for every layer
 
 ```bash
-dotnet add package Deepstaging
+dotnet add package Deepstaging.Roslyn
+dotnet add package Deepstaging.Roslyn.Testing --version prerelease
 ```
 
-Includes:
-- ✅ Fluent query builders for all symbol types
-- ✅ Scriban template engine integration
-- ✅ Testing framework for every layer
-- ✅ Type-safe projections and transformations
+### [deepstaging/templates](https://github.com/deepstaging/templates)
+**Project templates for scaffolding new Roslyn tools**
 
-### [deepstaging/effects](https://github.com/deepstaging/effects)
-**Complete effects system built on Deepstaging**
+Installable .NET templates that generate production-ready projects:
+- **deepstaging-roslyn** - Complete Roslyn tooling suite (analyzer, generator, code fix, tests)
+- Pre-configured with best practices
+- Full test coverage from day one
+- Ready to publish to NuGet
 
 ```bash
-dotnet add package Deepstaging.Effects
+dotnet new install Deepstaging.Templates
+dotnet new deepstaging-roslyn -n MyAwesomeTool
 ```
 
-Real-world example showing:
-- ✅ Complex multi-layer generators
-- ✅ Analyzers with rich diagnostics
-- ✅ Code fixes that transform correctly
-- ✅ Full test coverage at every layer
+### [deepstaging/workspace](https://github.com/deepstaging/workspace)
+**Multi-repository control plane for development**
+
+TypeScript-based automation workspace:
+- Create repositories from templates
+- Orchestrate builds across projects
+- Manage local NuGet feeds
+- AI-powered commit workflows
+- Batch package updates
+
+```bash
+git clone https://github.com/deepstaging/workspace.git
+cd workspace && ./scripts/bootstrap/index.ts
+```
 
 ---
 
-## 🏁 Get Started with Development
+## 🚀 Quick Start
 
-### Option 1: Use Deepstaging in Your Project
+### Option 1: Add to Existing Project
 
 ```bash
-# Add to your analyzer/generator project
-dotnet add package Deepstaging
+# Add core library to your analyzer/generator project
+dotnet add package Deepstaging.Roslyn
 
-# Add to your test project  
-dotnet add package Deepstaging.Testing
+# Add testing framework
+dotnet add package Deepstaging.Roslyn.Testing
 ```
 
-[📚 Read the getting started guide →](https://github.com/deepstaging/deepstaging#readme)
-
-### Option 2: Create a New Roslyn Project from Template
+### Option 2: Start from Template
 
 ```bash
-# Clone the workspace
+# Install templates
+dotnet new install Deepstaging.Templates
+
+# Create new project
+dotnet new deepstaging-roslyn -n MyTool
+cd MyTool
+
+# Build and test
+dotnet build
+dotnet test
+```
+
+### Option 3: Use the Workspace
+
+```bash
+# Clone and bootstrap
 git clone https://github.com/deepstaging/workspace.git
 cd workspace
+./scripts/bootstrap/index.ts
 
-# Run bootstrap to set up everything
-./scripts/bootstrap.sh
-
-# Create your project
-./scripts/new-roslyn-project.sh MyAwesomeTool
+# Create repository from template
+workspace-repository-create
 ```
-
-**You get:**
-- ✅ Complete project structure with best practices
-- ✅ Pre-configured testing setup
-- ✅ Sample queries, analyzers, and generators
-- ✅ Build scripts and packaging ready to go
-
-### Option 3: Explore the Examples
-
-**Start with the effects repository:**
-```bash
-git clone https://github.com/deepstaging/effects.git
-cd effects
-dotnet test  # See query tests run in milliseconds
-```
-
-**Key files to check out:**
-- `src/Deepstaging.Effects.Queries/` - How to write queries
-- `src/Deepstaging.Effects.Generators/` - How queries become generators
-- `src/Deepstaging.Effects.Tests/` - Testing at every layer
 
 ---
 
-## 🎓 Why Query-First?
+## ✨ Key Features
 
-**Traditional Roslyn development:**
-1. Write a generator
-2. Debug symbol API issues
-3. Wait for slow tests
-4. Fix one bug, create two more
-5. Repeat until you give up or ship buggy code
+### 🔍 Fluent Query Builders
 
-**Deepstaging development:**
-1. Write a query (5 minutes)
-2. Test it (runs in milliseconds)
-3. Fix any issues instantly
-4. Use query in generator with confidence
-5. Ship reliable tooling
+Write readable code that finds symbols without loops or null checks:
 
-**The result:** Faster development, fewer bugs, tooling you can trust.
+```csharp
+var methods = compilation
+    .QueryTypes()
+    .ThatArePublic()
+    .ThatAreClasses()
+    .WithAttribute("MyAttribute")
+    .SelectMany(t => t.GetMembers()
+        .OfType<IMethodSymbol>()
+        .Where(m => m.ReturnsVoid));
+```
+
+### 🎨 Template-Based Generation
+
+Generate code with Scriban templates, not string builders:
+
+```csharp
+context.AddFromTemplate(
+    Named("ApiClient.scriban-cs"),
+    "GeneratedClient.g.cs",
+    new { Controllers = controllers });
+```
+
+### ⚡ Fast Testing
+
+Test your queries in milliseconds, not seconds:
+
+```csharp
+[Test]
+public async Task FindsEmailValidatorMethods()
+{
+    var result = await Query.FindValidators(compilation);
+    Assert.That(result.Count(), Is.EqualTo(3));
+}
+```
+
+### 🎯 Layered Architecture
+
+Build tooling in layers, testing each independently:
+- **Queries** - Find and project symbols (test in ms)
+- **Templates** - Render code (test in ms)
+- **Analyzers** - Detect patterns (test fast)
+- **CodeFixes** - Transform code (test medium)
+- **Generators** - Generate code (test slower)
 
 ---
 
-## 🛠️ Technology
+## 🛠️ Technology Stack
 
-- **C# / .NET** - netstandard2.0 for analyzers/generators, net10.0 for runtime
-- **Roslyn** - Microsoft.CodeAnalysis.CSharp 4.11.0+
-- **Scriban** - Powerful template engine for code generation
+- **C# / .NET** - netstandard2.0 for analyzers/generators, modern .NET for runtime
+- **Roslyn** - Microsoft.CodeAnalysis.CSharp 4.14.0+
+- **Scriban** - Template engine for code generation
 - **TUnit** - Modern, fast testing framework
 
 ---
 
-## 📚 Resources
+## 📚 Documentation
 
-- [📖 Documentation](https://github.com/deepstaging/deepstaging#readme)
-- [🧪 Testing Guides](https://github.com/deepstaging/deepstaging/tree/main/src/Deepstaging.Testing)
+- [📖 Roslyn Library Docs](https://github.com/deepstaging/roslyn#readme)
+- [🧪 Testing Framework Guide](https://github.com/deepstaging/roslyn/tree/main/src/Deepstaging.Roslyn.Testing)
+- [📦 Template Documentation](https://github.com/deepstaging/templates#readme)
 - [🏗️ Workspace Setup](https://github.com/deepstaging/workspace#readme)
 - [💬 Discussions](https://github.com/orgs/deepstaging/discussions)
-- [🐛 Issues](https://github.com/deepstaging/deepstaging/issues)
 
 ---
 
@@ -236,4 +181,8 @@ dotnet test  # See query tests run in milliseconds
 
 MIT - Build whatever you want with Deepstaging.
 
-**Stop guessing. Start querying. Build reliable Roslyn tooling today.**
+---
+
+**Ready to build Roslyn tooling the modern way?**
+
+Start with the [roslyn repository](https://github.com/deepstaging/roslyn) or create a project from [templates](https://github.com/deepstaging/templates).
