@@ -21,19 +21,30 @@ public interface IEmailService
     Task SendAsync(string to, string subject, string body);
 }
 
+public interface ISlackService
+{
+    Task PostMessageAsync(string channel, string message);
+}
+
 // Create an effects module
 [EffectsModule(typeof(IEmailService), Name = "Email")]
+[EffectsModule(typeof(ISlackService), Name = "Slack")]
 public partial class AppEffects;
+
+// Define a runtime
+[Runtime]
+[Uses(typeof(AppEffects))]
+public partial class AppRuntime;
 
 // Compose with LINQ
 using static AppEffects;
 
 var workflow = 
-    from _ in Email.Send("user@example.com", "Hello", "Welcome!")
-    from _ in Slack.PostMessage("#general", "New user signed up!")
+    from _ in Email.SendAsync("user@example.com", "Hello", "Welcome!")
+    from _ in Slack.PostMessageAsync("#general", "New user signed up!")
     select unit;
 
-await workflow.Run(runtime);
+await workflow.RunAsync(runtime);
 ```
 
 **Features:** Zero reflection • OpenTelemetry tracing • LanguageExt integration • Compile-time analyzers
