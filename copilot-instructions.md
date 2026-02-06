@@ -203,6 +203,15 @@ All source files include SPDX license headers:
 // SPDX-License-Identifier: RPL-1.5
 ```
 
+## Documentation
+
+The roslyn repo uses mkdocs for documentation at `roslyn/docs/`. The site is published to https://deepstaging.github.io/roslyn.
+
+**When making changes to the roslyn codebase:**
+- If adding new public APIs (Query classes, Emit builders, Testing contexts), update the corresponding docs in `roslyn/docs/api/` or `roslyn/docs/testing/`
+- If changing API signatures or behavior, update the documentation to match
+- Run `./docs.sh build` to verify docs build correctly
+
 ## License
 
 **RPL-1.5** (Reciprocal Public License) — Improvements must be shared back under the same license.
