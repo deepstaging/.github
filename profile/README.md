@@ -66,8 +66,6 @@ dotnet new roslyn-generator -n MyGenerator
 
 - **C# / .NET 9** — Modern .NET with netstandard2.0 for analyzers
 - **Roslyn** — Microsoft.CodeAnalysis for source generation
-- **LanguageExt** — Functional programming primitives
-- **OpenTelemetry** — Distributed tracing
 
 ## License
 
