@@ -96,7 +96,7 @@ Writers transform projection models into generated code:
 ```csharp
 module
     .WriteEffectsModule()
-    .RegisterSourceWith(ctx, hint.Filename("Effects", name));
+    .AddSourceTo(ctx, hint.Filename("Effects", name));
 ```
 
 ## Testing

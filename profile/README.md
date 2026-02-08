@@ -1,53 +1,10 @@
 # Deepstaging
 
-**Turn service interfaces into composable, instrumented effects — zero boilerplate.**
+**Roslyn-based code generation ecosystem for C#/.NET.**
 
-Deepstaging generates effect wrappers for your services at compile time, giving you functional composition with LINQ syntax, built-in OpenTelemetry tracing, and compile-time validation.
+Build source generators, analyzers, and code fixes with fluent APIs and strong tooling.
 
 ## Repositories
-
-### [deepstaging/deepstaging](https://github.com/deepstaging/deepstaging)
-
-The main library. Define your services, mark them with attributes, and get composable effects with tracing.
-
-```bash
-dotnet add package Deepstaging
-```
-
-```csharp
-// Define services
-public interface IEmailService
-{
-    Task SendAsync(string to, string subject, string body);
-}
-
-public interface ISlackService
-{
-    Task PostMessageAsync(string channel, string message);
-}
-
-// Create an effects module
-[EffectsModule(typeof(IEmailService), Name = "Email")]
-[EffectsModule(typeof(ISlackService), Name = "Slack")]
-public partial class AppEffects;
-
-// Define a runtime
-[Runtime]
-[Uses(typeof(AppEffects))]
-public partial class AppRuntime;
-
-// Compose with LINQ
-using static AppEffects;
-
-var workflow = 
-    from _ in Email.SendAsync("user@example.com", "Hello", "Welcome!")
-    from _ in Slack.PostMessageAsync("#general", "New user signed up!")
-    select unit;
-
-await workflow.RunAsync(runtime);
-```
-
-**Features:** Zero reflection • OpenTelemetry tracing • LanguageExt integration • Compile-time analyzers
 
 ### [deepstaging/roslyn](https://github.com/deepstaging/roslyn)
 
@@ -74,6 +31,37 @@ var code = TypeBuilder.Class("CustomerDto")
 
 **Packages:** `Deepstaging.Roslyn` • `Deepstaging.Roslyn.Scriban` • `Deepstaging.Roslyn.Testing`
 
+### [deepstaging/ids](https://github.com/deepstaging/ids)
+
+Strongly-typed ID source generator. Generate type-safe wrappers around primitives with equality, comparison, and serialization.
+
+```bash
+dotnet add package Deepstaging.Ids
+```
+
+```csharp
+[StrongId]
+public readonly partial struct UserId;
+
+[StrongId(BackingType = BackingType.Int)]
+public readonly partial struct OrderId;
+
+// Type-safe IDs with full equality, comparison, and parsing
+var userId = new UserId(Guid.NewGuid());
+var orderId = new OrderId(42);
+```
+
+**Features:** Guid/Int/Long/String backing types • JSON/EF Core/Dapper converters • Compile-time analyzers
+
+### [deepstaging/templates](https://github.com/deepstaging/templates)
+
+`dotnet new` templates for creating Roslyn projects with Deepstaging.Roslyn.
+
+```bash
+dotnet new install Deepstaging.Templates
+dotnet new roslyn-generator -n MyGenerator
+```
+
 ## Tech Stack
 
 - **C# / .NET 9** — Modern .NET with netstandard2.0 for analyzers
@@ -89,6 +77,5 @@ Use it, modify it, deploy it. When you deploy, share your changes under the same
 
 ## Links
 
-- [Deepstaging Docs](https://github.com/deepstaging/deepstaging#readme)
-- [Roslyn Toolkit Docs](https://github.com/deepstaging/roslyn#readme)
+- [Roslyn Toolkit Docs](https://deepstaging.github.io/roslyn)
 - [Discussions](https://github.com/orgs/deepstaging/discussions)
