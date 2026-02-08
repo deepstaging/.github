@@ -33,7 +33,7 @@ var code = TypeBuilder.Class("CustomerDto")
 
 ### [deepstaging/ids](https://github.com/deepstaging/ids)
 
-Strongly-typed ID source generator. Generate type-safe wrappers around primitives with equality, comparison, and serialization.
+Strongly-typed ID source generator inspired by Andrew Lock's [StronglyTypedId](https://github.com/andrewlock/StronglyTypedId). Generate type-safe wrappers around primitives with equality, comparison, and serialization.
 
 ```bash
 dotnet add package Deepstaging.Ids
