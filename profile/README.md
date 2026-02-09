@@ -8,7 +8,7 @@ Build source generators, analyzers, and code fixes with fluent APIs and strong t
 
 ### [deepstaging/roslyn](https://github.com/deepstaging/roslyn)
 
-Fluent toolkit for building Roslyn source generators, analyzers, and code fixes. This powers Deepstaging's generators.
+Fluent toolkit for building Roslyn source generators, analyzers, and code fixes.
 
 ```bash
 dotnet add package Deepstaging.Roslyn
@@ -31,40 +31,11 @@ var code = TypeBuilder.Class("CustomerDto")
 
 **Packages:** `Deepstaging.Roslyn` • `Deepstaging.Roslyn.Scriban` • `Deepstaging.Roslyn.Testing`
 
-### [deepstaging/ids](https://github.com/deepstaging/ids)
-
-Strongly-typed ID source generator inspired by Andrew Lock's [StronglyTypedId](https://github.com/andrewlock/StronglyTypedId). Generate type-safe wrappers around primitives with equality, comparison, and serialization.
-
-```bash
-dotnet add package Deepstaging.Ids
-```
-
-```csharp
-[StrongId]
-public readonly partial struct UserId;
-
-[StrongId(BackingType = BackingType.Int)]
-public readonly partial struct OrderId;
-
-// Type-safe IDs with full equality, comparison, and parsing
-var userId = new UserId(Guid.NewGuid());
-var orderId = new OrderId(42);
-```
-
-**Features:** Guid/Int/Long/String backing types • JSON/EF Core/Dapper converters • Compile-time analyzers
-
-### [deepstaging/templates](https://github.com/deepstaging/templates)
-
-`dotnet new` templates for creating Roslyn projects with Deepstaging.Roslyn.
-
-```bash
-dotnet new install Deepstaging.Templates
-dotnet new roslyn-generator -n MyGenerator
-```
+**[Documentation](https://deepstaging.github.io/roslyn)**
 
 ## Tech Stack
 
-- **C# / .NET 9** — Modern .NET with netstandard2.0 for analyzers
+- **C# / .NET 10** — Modern .NET with netstandard2.0 for analyzers
 - **Roslyn** — Microsoft.CodeAnalysis for source generation
 
 ## License
